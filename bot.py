@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Ваш токен, полученный от @BotFather
-TELEGRAM_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+TELEGRAM_TOKEN = '7589878258:AAFgHqQN88E4kfikhrAWm9-HjWlePQgo4gY'
 
 # Создаем экземпляры бота и диспетчера
 bot = Bot(token=TELEGRAM_TOKEN)
@@ -88,7 +88,7 @@ async def show_trending_scripts(message: types.Message):
         data = response.json()
         if data.get('success'):
             trending_scripts = data['success']
-                        if not trending_scripts:
+            if not trending_scripts:
                 await message.reply('Нет трендовых скриптов.')
                 return
             
