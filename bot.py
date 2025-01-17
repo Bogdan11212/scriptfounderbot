@@ -58,7 +58,7 @@ async def search_script(message: types.Message):
 @dp.message_handler()
 async def handle_search(message: types.Message):
     query = message.text
-    response = requests.get(f"https://rscripts.net/api/v2/scripts?page=1&orderBy=date&sort=desc")
+    response = requests.get("https://rscripts.net/api/v2/scripts?page=1&orderBy=date&sort=desc")
     
     if response.status_code == 200:
         scripts_data = response.json().get('scripts', [])
@@ -88,9 +88,9 @@ async def show_trending_scripts(message: types.Message):
         data = response.json()
         if data.get('success'):
             trending_scripts = data['success']
-            if not trending_scripts:
+                        if not trending_scripts:
                 await message.reply('Нет трендовых скриптов.')
-                              return
+                return
             
             message_text = "Вот трендовые скрипты:\n\n"
             for script in trending_scripts:
