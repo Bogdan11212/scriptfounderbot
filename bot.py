@@ -1,21 +1,19 @@
 import logging
 import requests
 from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.utils import executor
+from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.utils import executor
 
 # Включаем логирование
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Ваш токен, полученный от @BotFather
-TELEGRAM_TOKEN = 'tokentipopon:-'
+TELEGRAM_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
 
 # Создаем экземпляры бота и диспетчера
 bot = Bot(token=TELEGRAM_TOKEN)
-storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+dp = Dispatcher()
 
 # Создаем клавиатуру
 keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -24,9 +22,9 @@ keyboard.add(KeyboardButton("Поиск скрипта по названию"))
 keyboard.add(KeyboardButton("Показать трендовые скрипты"))  # Новая кнопка
 
 # Функция для обработки команды /start
-@dp.message_handler(commands=['start'])
+@dp.message(Command("start"))
 async def start(message: types.Message):
-    await message.reply('Привет! Выберите действие:', reply_markup=keyboard)
+    await message.answer('Привет! Выберите действие:', reply_markup=keyboard)
 
 # Функция для показа последних скриптов
 @dp.message_handler(lambda message: message.text == "Показать последние скрипты")
@@ -87,7 +85,7 @@ async def show_trending_scripts(message: types.Message):
     if response.status_code == 200:
         data = response.json()
         if data.get('success'):
-            trending_scripts = data['success']
+                        trending_scripts = data['success']
             if not trending_scripts:
                 await message.reply('Нет трендовых скриптов.')
                 return
@@ -106,9 +104,8 @@ async def show_trending_scripts(message: types.Message):
         await message.reply('Ошибка при получении трендовых скриптов.')
 
 # Функция для обработки команды /script
-@dp.message_handler(commands=['script'])
+@dp.message(Command("script"))
 async def get_script(message: types.Message):
-    # Извлекаем ID из сообщения
     command_parts = message.text.split()
     
     if len(command_parts) != 2:
@@ -117,7 +114,6 @@ async def get_script(message: types.Message):
     
     script_id = command_parts[1]
     
-    # Выполняем запрос к API для получения конкретного скрипта
     response = requests.get(f"https://rscripts.net/api/v2/script?id={script_id}")
     
     if response.status_code == 200:
@@ -136,5 +132,4 @@ async def get_script(message: types.Message):
         await message.reply('Ошибка при получении скрипта.')
 
 if __name__ == '__main__':
-    # Запускаем бота
     executor.start_polling(dp, skip_updates=True)
